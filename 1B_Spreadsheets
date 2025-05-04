@@ -1,0 +1,48 @@
+# CODEFORCES 1B
+
+# Import regular expressions for pattern matching
+import re 
+
+# Convert a numeric column index (e.g., 55) to Excel-style column label (e.g., 'BC')
+def to_excel(n):
+    col = ""
+    while n:
+        n -= 1  # Adjust because Excel columns are 1-based (A=1, not 0)
+        # Get the character for the current digit and prepend it
+        col = chr(n % 26 + ord('A')) + col
+        n //= 26  # Move to the next alphabet
+    return col
+
+# Convert an Excel-style column label (e.g., 'BC') to a numeric column index (e.g., 55)
+def from_excel(col):
+    n = 0
+    for c in col:
+        # Convert each character from left to right using base-26 logic
+        n = n * 26 + (ord(c) - ord('A') + 1)
+    return n
+
+# Convert a cell identifier from one format to the other
+def convert(cell):
+    # Check if input matches RXCY format (e.g., 'R23C55')
+    if re.match(r'^R\d+C\d+$', cell):
+        # Extract row and column numbers from the RXCY format
+        row = re.findall(r'\d+', cell)[0]  # First number after 'R'
+        col = re.findall(r'\d+', cell)[1]  # Number after 'C'
+        # Convert numeric column to Excel-style and append row number
+        return to_excel(int(col)) + row
+    else:
+        # Assume input is in Excel-style (e.g., 'BC23')
+        m = re.match(r'^([A-Z]+)(\d+)$', cell)
+        col_letters = m.group(1)  # Extract column letters
+        row = m.group(2)          # Extract row number
+        # Convert Excel-style column to numeric and format as RXCY
+        col_number = from_excel(col_letters)
+        return f'R{row}C{col_number}'
+
+# Read number of inputs
+n = int(input())  # First input line: number of cell identifiers
+
+# Process each input line and convert format
+for _ in range(n):
+    cell = input().strip()  # Read and clean input line
+    print(convert(cell))    # Output converted cell identifier
