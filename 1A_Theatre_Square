@@ -1,0 +1,11 @@
+#CODEFORCES 1A
+
+# Read string input and split it into three integers
+n, m, a = map(int, input().split())\
+    
+# math.ceil() rounds up to the nearest integer
+dimension1 = math.ceil(n/a)
+dimension2 = math.ceil(m/a)
+total_tiles = dimension1 * dimension2
+
+print(total_tiles)
